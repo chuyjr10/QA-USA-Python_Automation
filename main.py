@@ -1,8 +1,6 @@
 import data
-
-
+import helpers
 class TestUrbanRoutes:
-    class TestUrbanRoutes:
 
         def test_set_route(self):
             # Add in S8
@@ -44,13 +42,14 @@ class TestUrbanRoutes:
             print("function created for car search model appears")
             pass
 
+@classmethod
 
-import helpers
-
-
-class TestUrbanRoutes:
-
-    @classmethod
+def setup_class(cls):
+    if helpers.is_server_working():
+        print("Server is working.")
+    else:
+        print("Server is not reachable.")
+        # Optionally handle server not working
     def setup_class(cls):
         if helpers.is_server_working():
             print("Server is working.")
