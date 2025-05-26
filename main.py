@@ -34,7 +34,7 @@ class TestUrbanRoutes:
             print("function created for order blanket and handkerchiefs")
             pass
 
-            def test_order_2_ice_creams(self):
+        def test_order_2_ice_creams(self):
                 for _ in range(2):
                     # Add in S8
                     pass
