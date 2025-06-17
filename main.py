@@ -1,52 +1,27 @@
-import data
-import helpers
+from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
+from pages import UrbanRoutesPage
+
+
 class TestUrbanRoutes:
     @classmethod
     def setup_class(cls):
-        if helpers.is_server_working():
-            print("Server is working.")
-        else:
-            print("Server is not reachable.")
-            # Optionally handle server not working
+        from selenium.webdriver.chrome.options import Options
+        options = webdriver.ChromeOptions()
+        options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
+        cls.driver = webdriver.Chrome(options=options)
+        cls.page = UrbanRoutesPage(cls.driver)
+        cls.driver.get("https://cnt-1536bf49-03a6-471e-b060-2c1c10ac7bc2.containerhub.tripleten-services.com/")  # ⛔ Replace with real URL
 
-    def test_set_route(self):
-        # Add in S8
-        print("function created for set route")
-        pass
+    def test_user_can_login_and_order_icecream(self):
+        self.page.click_login_button()
+        self.page.enter_phone_number("1234567890")
+        self.page.send_code()
+        self.page.select_icecreams(count=3)
+        self.page.click_order()
+        confirmation = self.page.get_confirmation_text()
+        assert "Thank you" in confirmation or "confirmed" in confirmation.lower()
 
-    def test_select_plan(self):
-        # Add in S8
-        print("function created for select plan")
-        pass
-
-    def test_fill_phone_number(self):
-        # Add in S8
-        print("function created for fill phone number")
-        pass
-
-    def test_fill_card(self):
-        # Add in S8
-        print("function created for fill card")
-        pass
-
-    def test_comment_for_driver(self):
-        # Add in S8
-        print("function created for comment for driver")
-        pass
-
-    def test_order_blanket_and_handkerchiefs(self):
-        # Add in S8
-        print("function created for order blanket and handkerchiefs")
-        pass
-
-    def test_order_2_ice_creams(self):
-        for _ in range(2):
-            # Add in S8
-            pass
-
-    def test_car_search_model_appears(self):
-        # Add in S8
-        print("function created for car search model appears")
-        pass
-
-
+    @classmethod
+    def teardown_class(cls):
+        cls.driver.quit()
