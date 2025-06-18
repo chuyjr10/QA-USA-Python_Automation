@@ -46,8 +46,8 @@ class UrbanRoutesPage:
     order_driver_image = (By.XPATH, '//div[@class="order-button"]//img')
     order_driver_name = (By.XPATH, '//div@class="order-btn-group"/div[2]') '''
 
-    def __init__(self) -> None :
-        self.driver = None
+    def __init__(self, driver)  :
+        self.driver = driver
 
     def init(self, driver):
         self.driver = driver

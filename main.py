@@ -5,6 +5,7 @@ import helpers
 from pages import UrbanRoutesPage
 
 class TestUrbanRoutes:
+    @classmethod
     def setup_class(cls):
         # do not modify - we need additional logging enabled in order to retrieve phone confirmation code
         from selenium.webdriver import DesiredCapabilities
@@ -20,21 +21,21 @@ class TestUrbanRoutes:
 
     def test_set_route(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         assert routes_page.get_from() == data.ADDRESS_FROM
         assert routes_page.get_to() == data.ADDRESS_TO
 
     def test_select_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.select_supportive_plan()
         assert routes_page.get_current_selected_plan() == 'Supportive'
 
     def test_fill_phone_number(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         phone_number = data.PHONE_NUMBER
         routes_page.set_phone(phone_number)
@@ -42,14 +43,14 @@ class TestUrbanRoutes:
 
     def test_fill_card(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.set_card(data.CARD_NUMBER, data.CARD_CODE)
         assert routes_page.get_current_payment_method() == 'Card'
 
     def test_comment_for_driver(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         message = data.MESSAGE_FOR_DRIVER
         routes_page.set_message_for_driver(message)
@@ -57,7 +58,7 @@ class TestUrbanRoutes:
 
     def test_order_blanket_and_handkerchiefs(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.select_supportive_plan()
         routes_page.click_blanket_and_handkerchiefs_option()
@@ -65,7 +66,7 @@ class TestUrbanRoutes:
 
     def test_order_2_ice_creams(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.select_supportive_plan()
         number_of_ice_creams = 2
@@ -74,7 +75,7 @@ class TestUrbanRoutes:
 
     def test_car_search_model_appears(self):
         self.driver.get(data.URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage()
+        routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.select_supportive_plan()
         message = data.MESSAGE_FOR_DRIVER
