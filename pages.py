@@ -88,24 +88,24 @@ class UrbanRoutesPage:
         return self.driver.find_element(*self.active_plan_card).text
 
     def set_phone(self, number):
-        self.driver.find_element(self.phone_number_control).click()
-        self.driver.find_element(self.phone_number_input).send_keys(number)
-        self.driver.find_element(self.phone_number_next_button).click()
+        self.driver.find_element(*self.phone_number_control).click()
+        self.driver.find_element(*self.phone_number_input).send_keys(number)
+        self.driver.find_element(*self.phone_number_next_button).click()
         code = retrieve_phone_code(self.driver)
-        self.driver.find_element(self.phone_number_code_input).send_keys(code)
+        self.driver.find_element(*self.phone_number_code_input).send_keys(code)
         self.driver.find_element(*self.phone_number_confirm_button).click()
 
     def get_phone(self):
         return self.driver.find_element(*self.phone_number).text
 
     def set_card(self, card_number, code):
-        self.driver.find_element(self.payment_method_select).click()
+        self.driver.find_element(*self.payment_method_select).click()
         time.sleep(2)
-        self.driver.find_element(self.add_card_control).click()
-        self.driver.find_element(self.card_number_input).send_keys(card_number)
-        self.driver.find_element(self.card_code_input).send_keys(code)
+        self.driver.find_element(*self.add_card_control).click()
+        self.driver.find_element(*self.card_number_input).send_keys(card_number)
+        self.driver.find_element(*self.card_code_input).send_keys(code)
         # self.driver.find_element(self.card_code_input).send_keys(Keys.TAB)
-        self.driver.find_element(self.card_credentials_confirm_button).click()
+        self.driver.find_element(*self.card_credentials_confirm_button).click()
         self.driver.find_element(*self.close_button_payment_method).click()
 
     def get_current_payment_method(self):
