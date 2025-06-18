@@ -1,3 +1,4 @@
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -40,13 +41,13 @@ class UrbanRoutesPage:
     def click_login_button(self):
         self.wait.until(EC.element_to_be_clickable(self.LOGIN_BUTTON)).click()
 
-    def enter_phone_number(self, phone: str):
+    def enter_phone_number(self, phone):
         self.wait.until(EC.presence_of_element_located(self.PHONE_INPUT)).send_keys(phone)
 
     def send_code(self):
         self.wait.until(EC.element_to_be_clickable(self.SEND_CODE_BUTTON)).click()
 
-    def select_icecreams(self, count=3):
+    def select_icecreams(self, count):
         options = self.wait.until(EC.presence_of_all_elements_located(self.ICECREAM_OPTIONS))
         for i in range(min(count, len(options))):
             options[i].click()
@@ -77,4 +78,6 @@ class UrbanRoutesPage:
         self.wait.until(EC.presence_of_element_located(self.COMMENT_BOX)).send_keys(comment)
 
     def order_blanket_and_handkerchiefs(self):
-        self.wait.until(EC.el
+        self.wait.until(EC.element_to_be_clickable(self.BLANKET_CHECKBOX)).click()
+        self.wait.until(EC.element_to_be_clickable(self.HANDKERCHIEF_CHECKBOX)).click()
+
