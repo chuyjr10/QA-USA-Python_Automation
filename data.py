@@ -1,6 +1,6 @@
 # File with constants URBAN_ROUTES_URL
 # URL for the Urban Routes app
-URBAN_ROUTES_URL = 'https://cnt-af2fb9a8-5177-4cbb-be10-2adb6b6e1adb.containerhub.tripleten-services.com/'
+URBAN_ROUTES_URL = 'https://cnt-33c7deb7-0f95-476a-9da1-a11db20fbe8c.containerhub.tripleten-services.com//'
 
 # Test data
 ADDRESS_FROM = 'East 2nd Street, 601'
