@@ -1,8 +1,11 @@
+import time
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
+from helpers import retrieve_phone_code
+
 
 class UrbanRoutesPage:
     # Addresses
@@ -44,6 +47,9 @@ class UrbanRoutesPage:
     order_driver_image = (By.XPATH, '//div[@class="order-button"]//img')
     order_driver_name = (By.XPATH, '//div@class="order-btn-group"/div[2]') '''
 
+    def __init__(self) -> None :
+        self.driver = None
+
     def init(self, driver):
         self.driver = driver
 
@@ -65,7 +71,7 @@ class UrbanRoutesPage:
         WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.call_taxi_button))
         self.driver.find_element(*self.call_taxi_button).click()
 
-    def set_route(self, from_address, to_address):
+    def set_route(self, from_address: object, to_address: object) -> None:
         self.set_from(from_address)
         self.set_to(to_address)
         self.click_call_taxi_button()
