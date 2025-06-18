@@ -1,12 +1,10 @@
 from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
 from pages import UrbanRoutesPage
 
 
 class TestUrbanRoutes:
     @classmethod
     def setup_class(cls):
-        from selenium.webdriver.chrome.options import Options
         options = webdriver.ChromeOptions()
         options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
         cls.driver = webdriver.Chrome()
