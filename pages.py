@@ -5,79 +5,135 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class UrbanRoutesPage:
-    def __init__(self, driver: WebDriver):
+    # Addresses
+    from_field = (By.ID, 'from')
+    to_field = (By.ID, 'to')
+    # Tariff and call button
+    supportive_plan_card = (By.XPATH, '//div[contains(text(), "Supportive")]')
+    supportive_plan_card_parent = (By.XPATH, '//div[contains(text(), "Supportive")]//..')
+    active_plan_card = (By.XPATH, '//div[@class="tcard active"]//div[@class="tcard-title"]')
+    call_taxi_button = (By.XPATH, '//button[contains(text(), "Call a taxi")]')
+    # Phone number
+    phone_number_control = (By.XPATH, '//div[@class="np-button"]//div[contains(text(), "Phone number")]')
+    phone_number_input = (By.ID, 'phone')
+    phone_number_code_input = (By.ID, 'code')
+    phone_number_next_button = (By.CSS_SELECTOR, '.full')
+    phone_number_confirm_button = (By.XPATH, '//button[contains(text(), "Confirm")]')
+    phone_number = (By.CLASS_NAME, 'np-text')
+    # Payments
+    payment_method_select = (By.XPATH, '//div[@class="pp-button filled"]//div[contains(text(), "Payment method")]')
+    add_card_control = (By.XPATH, '//div[contains(text(), "Add card")]')
+    card_number_input = (By.ID, 'number')
+    card_code_input = (By.XPATH, '//input[@class="card-input" and @id="code"]')
+    card_credentials_confirm_button = (By.XPATH, '//button[contains(text(), "Link")]')
+    close_button_payment_method = (
+        By.XPATH, '//div[@class="payment-picker open"]//button[@class="close-button section-close"]')
+    current_payment_method = (By.CLASS_NAME, 'pp-value-text')
+    # Options
+    message_for_driver = (By.ID, 'comment')
+    option_switches = (By.CLASS_NAME, 'switch')
+    option_switches_inputs = (By.CLASS_NAME, 'switch-input')
+    add_enumerable_option = (By.CLASS_NAME, 'counter-plus')
+    amount_of_enumerable_option = (By.CLASS_NAME, 'counter-value')
+    # Order
+    order_car_button = (By.CLASS_NAME, 'smart-button-wrapper')
+    order_popup = (By.CLASS_NAME, 'order-body')
+
+    '''# Driver deprecated 7/10/24
+    order_driver_rating = (By.CLASS_NAME, 'order-btn-rating')
+    order_driver_image = (By.XPATH, '//div[@class="order-button"]//img')
+    order_driver_name = (By.XPATH, '//div@class="order-btn-group"/div[2]') '''
+
+    def init(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
 
-    # === Locators ===
-    LOGIN_BUTTON = (By.ID, 'login-btn')
-    PHONE_INPUT = (By.NAME, 'phone')
-    SEND_CODE_BUTTON = (By.CLASS_NAME, 'send-code')
-    ICECREAM_OPTIONS = (By.CLASS_NAME, 'icecream-option')
-    ORDER_BUTTON = (By.XPATH, '//button[contains(text(), "Order")]')
-    CONFIRMATION_MESSAGE = (By.CSS_SELECTOR, '.confirmation')
+    def set_from(self, from_address):
+        from_field = WebDriverWait(self.driver, 3).until(
+            expected_conditions.visibility_of_element_located(self.from_field))
+        from_field.send_keys(from_address)
 
-    FROM_INPUT = (By.ID, 'route-from')
-    TO_INPUT = (By.ID, 'route-to')
-    SET_ROUTE_BUTTON = (By.ID, 'set-route')
+    def set_to(self, to_address):
+        self.driver.find_element(*self.to_field).send_keys(to_address)
 
-    PLAN_DROPDOWN = (By.ID, 'plan-select')
-    SELECTED_PLAN = (By.XPATH, '//option[@value="premium"]')
+    def get_from(self):
+        return self.driver.find_element(*self.from_field).get_property('value')
 
-    CARD_INPUT = (By.ID, 'card-number')
-    EXPIRY_INPUT = (By.ID, 'card-expiry')
-    CVV_INPUT = (By.ID, 'card-cvv')
-    PAY_BUTTON = (By.ID, 'pay-now')
+    def get_to(self):
+        return self.driver.find_element(*self.to_field).get_property('value')
 
-    COMMENT_BOX = (By.ID, 'driver-comment')
+    def click_call_taxi_button(self):
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.call_taxi_button))
+        self.driver.find_element(*self.call_taxi_button).click()
 
-    BLANKET_CHECKBOX = (By.ID, 'blanket')
-    HANDKERCHIEF_CHECKBOX = (By.ID, 'handkerchief')
+    def set_route(self, from_address, to_address):
+        self.set_from(from_address)
+        self.set_to(to_address)
+        self.click_call_taxi_button()
 
-    CAR_SEARCH_FIELD = (By.ID, 'car-search')
-    CAR_RESULT = (By.CLASS_NAME, 'car-model-result')
+    def select_supportive_plan(self):
+        """ Here we need to check that the Supportive tariff is not selected.
+         If it is already selected, there is no extra click and the test class runs smoothly"""
+        if self.driver.find_element(*self.supportive_plan_card_parent).get_attribute("class") != "tcard active":
+            card = WebDriverWait(self.driver, 3).until(
+                expected_conditions.visibility_of_element_located(self.supportive_plan_card))
+            self.driver.execute_script("arguments[0].scrollIntoView();", card)
+            card.click()
 
-    # === Page Actions ===
-    def click_login_button(self):
-        self.wait.until(EC.element_to_be_clickable(self.LOGIN_BUTTON)).click()
+    def get_current_selected_plan(self):
+        return self.driver.find_element(*self.active_plan_card).text
 
-    def enter_phone_number(self, phone):
-        self.wait.until(EC.presence_of_element_located(self.PHONE_INPUT)).send_keys(phone)
+    def set_phone(self, number):
+        self.driver.find_element(self.phone_number_control).click()
+        self.driver.find_element(self.phone_number_input).send_keys(number)
+        self.driver.find_element(self.phone_number_next_button).click()
+        code = retrieve_phone_code(self.driver)
+        self.driver.find_element(self.phone_number_code_input).send_keys(code)
+        self.driver.find_element(*self.phone_number_confirm_button).click()
 
-    def send_code(self):
-        self.wait.until(EC.element_to_be_clickable(self.SEND_CODE_BUTTON)).click()
+    def get_phone(self):
+        return self.driver.find_element(*self.phone_number).text
 
-    def select_icecreams(self, count):
-        options = self.wait.until(EC.presence_of_all_elements_located(self.ICECREAM_OPTIONS))
-        for i in range(min(count, len(options))):
-            options[i].click()
+    def set_card(self, card_number, code):
+        self.driver.find_element(self.payment_method_select).click()
+        time.sleep(2)
+        self.driver.find_element(self.add_card_control).click()
+        self.driver.find_element(self.card_number_input).send_keys(card_number)
+        self.driver.find_element(self.card_code_input).send_keys(code)
+        # self.driver.find_element(self.card_code_input).send_keys(Keys.TAB)
+        self.driver.find_element(self.card_credentials_confirm_button).click()
+        self.driver.find_element(*self.close_button_payment_method).click()
 
-    def click_order(self):
-        self.wait.until(EC.element_to_be_clickable(self.ORDER_BUTTON)).click()
+    def get_current_payment_method(self):
+        return self.driver.find_element(*self.current_payment_method).text
 
-    def get_confirmation_text(self):
-        return self.wait.until(EC.presence_of_element_located(self.CONFIRMATION_MESSAGE)).text
+    def set_message_for_driver(self, message):
+        self.driver.find_element(*self.message_for_driver).send_keys(message)
 
-    def set_route(self, from_location: str, to_location: str):
-        self.wait.until(EC.presence_of_element_located(self.FROM_INPUT)).send_keys(from_location)
-        self.wait.until(EC.presence_of_element_located(self.TO_INPUT)).send_keys(to_location)
-        self.wait.until(EC.element_to_be_clickable(self.SET_ROUTE_BUTTON)).click()
+    def get_message_for_driver(self):
+        return self.driver.find_element(*self.message_for_driver).get_property('value')
 
-    def select_plan(self):
-        dropdown = self.wait.until(EC.element_to_be_clickable(self.PLAN_DROPDOWN))
-        dropdown.click()
-        self.wait.until(EC.element_to_be_clickable(self.SELECTED_PLAN)).click()
+    def click_blanket_and_handkerchiefs_option(self):
+        switches = self.driver.find_elements(*self.option_switches)
+        switches[0].click()
+        self.get_blanket_and_handkerchiefs_option_checked()
 
-    def fill_card(self, number: str, expiry: str, cvv: str):
-        self.wait.until(EC.presence_of_element_located(self.CARD_INPUT)).send_keys(number)
-        self.wait.until(EC.presence_of_element_located(self.EXPIRY_INPUT)).send_keys(expiry)
-        self.wait.until(EC.presence_of_element_located(self.CVV_INPUT)).send_keys(cvv)
-        self.wait.until(EC.element_to_be_clickable(self.PAY_BUTTON)).click()
+    def get_blanket_and_handkerchiefs_option_checked(self):
+        switches = self.driver.find_elements(*self.option_switches_inputs)
+        return switches[0].get_property('checked')
 
-    def comment_for_driver(self, comment: str):
-        self.wait.until(EC.presence_of_element_located(self.COMMENT_BOX)).send_keys(comment)
+    def add_ice_cream(self, amount: int):
+        option_add_controls = self.driver.find_elements(*self.add_enumerable_option)
+        self.driver.execute_script("arguments[0].scrollIntoView();", option_add_controls[0])
+        for count in range(amount):
+            option_add_controls[0].click()
 
-    def order_blanket_and_handkerchiefs(self):
-        self.wait.until(EC.element_to_be_clickable(self.BLANKET_CHECKBOX)).click()
-        self.wait.until(EC.element_to_be_clickable(self.HANDKERCHIEF_CHECKBOX)).click()
+    def get_amount_of_ice_cream(self):
+        return int(self.driver.find_elements(*self.amount_of_enumerable_option)[0].text)
+
+    def click_order_taxi_button(self):
+        self.driver.find_element(*self.order_car_button).click()
+
+    def is_order_taxi_popup(self):
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.order_popup))
+        return self.driver.find_element(*self.order_popup).is_displayed()
 
